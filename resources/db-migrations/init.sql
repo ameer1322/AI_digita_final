@@ -20,7 +20,7 @@ CREATE TABLE users(
 
 CREATE TABLE products(
     product_id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL UNIQUE,
     price DECIMAL(10,2) NOT NULL,
     quantity INT NOT NULL
 );
