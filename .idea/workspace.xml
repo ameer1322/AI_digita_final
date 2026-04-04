@@ -5,18 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="40476476-a5db-43bc-bc03-de9acf690fe9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/controller/users_controller.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/user_model.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/repository/users_repository.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service/users_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/order_controller.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/order_model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/repository/order_repository.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/order_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/products_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/products_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/product_add_model.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/product_create_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/product_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repository/products_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/repository/products_repository.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/db-migrations/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/resources/db-migrations/init.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/products_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/service/products_service.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
