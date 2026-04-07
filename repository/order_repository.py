@@ -22,13 +22,22 @@ async def get_order_by_user(user_id : int):
     result = await database.fetch_one(query,values)
     return result
 
+async def check_order_exists(order_id:int):
+    query="""
+    SELECT order_id FROM orders
+    WHERE order_id = :order_id
+    """
+    values = {"order_id":order_id}
+    result = await database.fetch_one(query,values)
+    return result
+
 async def create_new_order(order :Order):
     query = """
     INSERT INTO orders (user_id)
     VALUES(:user_id)
     """
     values = {"user_id":order.user_id}
-    return await database.fetch_one(query,values)
+    await database.execute(query,values)
 
 async def create_new_order_item(order:Order, order_id):
     query = """
@@ -36,8 +45,7 @@ async def create_new_order_item(order:Order, order_id):
     VALUES(:order_id, :item_id, :quantity)
     """
     values = {"order_id":order_id,"item_id":order.item_id,"quantity":order.quantity}
-
-    return await database.fetch_one(query,values)
+    await database.execute(query,values)
 
 async def check_order_item(order:Order):
     query="""
@@ -54,3 +62,13 @@ async def add_item_to_order(order:Order,order_id:int):
     WHERE order_id = :order_id and item_id = :item_id
     """
     values = {"quantity":order.quantity,"order_id":order_id,"item_id":order.item_id}
+    await database.execute(query,values)
+
+async def delete_order(order_id:int):
+    query="""
+    DELETE FROM orders
+    WHERE order_id = :order_id
+    """
+    values = {"order_id":order_id}
+    await database.execute(query,values)
+

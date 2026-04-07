@@ -16,7 +16,9 @@ async def get_orders():
     return await order_service.get_orders()
 
 @router.put("/",status_code=status.HTTP_201_CREATED)
-async def new_order(order : Order):
-    return await order_service.new_order(order)
+async def handle_order(order : Order):
+    return await order_service.handle_order(order)
 
-
+@router.delete("/",status_code=status.HTTP_204_NO_CONTENT)
+async def delete_order(order_id : int):
+    return await order_service.delete_order(order_id)
