@@ -2,6 +2,9 @@ from pydantic import BaseSettings
 
 
 class Config(BaseSettings):
+    SECRET_KEY = "secret boy"  # change this to a long random string
+    ALGORITHM = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES = 30
     MYSQL_USER: str = "user"
     MYSQL_PASSWORD: str = "password"
     MYSQL_DATABASE: str = "main"

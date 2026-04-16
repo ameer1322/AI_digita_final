@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-class User(BaseModel):
+class RegisterModel(BaseModel):
     first_name:str
     last_name:str
     age:int
@@ -8,4 +8,4 @@ class User(BaseModel):
     phone:str
     address:str
     username:str
-    hashed_password:str
+    password:str

@@ -6,3 +6,6 @@ databases==0.7.0
 SQLAlchemy==1.4.47
 aiomysql
 httpx==0.23.0
+passlib[bcrypt]
+python-jose[cryptography]
+bcrypt==4.0.1

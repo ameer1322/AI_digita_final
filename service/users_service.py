@@ -1,7 +1,13 @@
 from fastapi import HTTPException
+from sqlalchemy.util import await_only
 from starlette import status
 from typing import Optional, List
+from jose import jwt
+from datetime import datetime,timedelta
 
+from utils.security import pwd_context
+from model.login_model import LoginModel
+from model.user_model import User
 from repository import users_repository
 
 async def get_users():
@@ -16,11 +22,20 @@ async def get_user_by_id(user_id:int):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail=str(e))
 
-async def create_user(first_name:str, last_name:str, email:str, age:int):
+async def get_user_by_username(username)-> User:
     try:
-        return await users_repository.create_user(first_name,last_name,email,age)
+        return await users_repository.get_user_by_username(username)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail=str(e))
+
+async def create_user(user:User):
+    try:
+        return await users_repository.create_user(user)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail=str(e))
+
+async def verify_password(password:str, hashed_password:str):
+    return pwd_context.verify(password, hashed_password)
 
 async def update_user(user_id:int, first_name:str, last_name:str, email:str, age:int):
     user_check = await get_user_by_id(user_id)
