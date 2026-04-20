@@ -25,33 +25,6 @@ async def get_users():
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail=str(e))
 
-@router.post("/",status_code=status.HTTP_201_CREATED)
-async def create_user(user: RegisterModel):
-    hashed_password = pwd_context.hash(user.password)
-    hashed_user=User(
-        first_name=user.first_name,
-        last_name=user.last_name,
-        age=user.age,
-        email=user.email,
-        phone=user.phone,
-        address=user.address,
-        username=user.username,
-        hashed_password=hashed_password
-    )
-
-    try:
-        return await users_service.create_user(hashed_user)
-    except Exception as e:
-        print(str(e))
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail=str(e))
-
-@router.post("/login",status_code=status.HTTP_200_OK)
-async def login(login_credential : LoginModel):
-    try:
-        return await users_service.login(login_credential)
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
-
 
 @router.put("/{user_id}",status_code=status.HTTP_200_OK)
 async def update_user(user_id:int, user:User):

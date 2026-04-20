@@ -5,6 +5,7 @@ from typing import Optional, List
 from jose import jwt
 from datetime import datetime,timedelta
 
+from model.user_response_model import UserResponse
 from utils.security import pwd_context
 from model.login_model import LoginModel
 from model.user_model import User
@@ -22,7 +23,7 @@ async def get_user_by_id(user_id:int):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail=str(e))
 
-async def get_user_by_username(username)-> User:
+async def get_user_by_username(username)-> UserResponse:
     try:
         return await users_repository.get_user_by_username(username)
     except Exception as e:

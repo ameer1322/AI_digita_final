@@ -3,6 +3,7 @@ from typing import Optional, List
 import json
 
 from model.user_model import User
+from model.user_response_model import UserResponse
 from repository.database import database
 
 
@@ -31,15 +32,14 @@ async def update_user(user_id:int, first_name:str, last_name:str, email:str, age
     values={"user_id":user_id,"first_name":first_name,"last_name":last_name,"email":email,"age":age}
     await database.execute(query,values)
 
-async def get_user_by_username(username:str)-> User:
+async def get_user_by_username(username:str)-> Optional[UserResponse]:
     query = """
     SELECT * FROM users
     WHERE username = :username
     """
-
     values = {"username": username}
     result = await database.fetch_one(query,values)
-    return User(**result)
+    return UserResponse(**dict(result))
 
 async def get_user_by_id(user_id:int)->User:
     query = """

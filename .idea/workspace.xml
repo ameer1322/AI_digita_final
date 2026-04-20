@@ -5,25 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="40476476-a5db-43bc-bc03-de9acf690fe9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/controller/auth_controller.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/exceptions/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/exceptions/exception.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/auth_response.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/login_model.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/register_model.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service/auth_service.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/security.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/user_response_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/auth_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/auth_controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/users_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/users_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/user_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/user_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/repository/users_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/repository/users_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/db-migrations/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/resources/db-migrations/init.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/auth_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/service/auth_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/users_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/service/users_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/multipage_app/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/multipage_app/api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/multipage_app/landing.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/multipage_app/landing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/multipage_app/pages/Register.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/multipage_app/pages/Register.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/multipage_app/pages/Login.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/multipage_app/pages/Login.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,7 +67,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-79ce2b023f03-d902c0275401-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-252.25557.130" />
+        <option value="bundled-python-sdk-4e2b1448bda8-9a97661f3031-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.27397.106" />
       </set>
     </attachedChunks>
   </component>

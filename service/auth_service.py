@@ -5,15 +5,17 @@ from jose import jwt, JWTError
 # from exceptions.exception import token_exception
 from config.config import Config
 from model.auth_response import AuthResponse
+from model.login_model import LoginModel
 from service import users_service
+from exceptions.exception import token_exception
 
 config = Config()
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 
-async def authenticate_user(username: str, password: str):
-    user = await users_service.get_user_by_username(username)
-    if not user or not users_service.verify_password(password, user.hashed_password):
+async def authenticate_user(credentials: LoginModel):
+    user = await users_service.get_user_by_username(credentials.username)
+    if not user or not await users_service.verify_password(credentials.password, user.hashed_password):
         return False
     return user
 
@@ -24,7 +26,7 @@ async def validate_user(token: str = Depends(oauth2_bearer)):
 
 def create_access_token(username: str, user_id: int) -> AuthResponse:
     user_data = {"subject": username, "id": user_id}
-    token_expire = datetime.utcnow() + timedelta(minutes=config.TOKEN_EXPIRY_TIME)
+    token_expire = datetime.utcnow() + timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
     user_data.update({"exp": token_expire})
     token = jwt.encode(user_data, config.SECRET_KEY, config.ALGORITHM)
     return AuthResponse(jwt_token=token)

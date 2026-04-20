@@ -31,13 +31,13 @@ CREATE TABLE products(
 
 CREATE TABLE favorites(
     product_id INT NOT NULL,
-    user_id INT NOT NULL
+    user_id INT NOT NULL,
 
     PRIMARY KEY(product_id,user_id),
 
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
-)
+);
 
 CREATE TABLE orders(
     order_id INT PRIMARY KEY AUTO_INCREMENT,
