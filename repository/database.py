@@ -1,5 +1,4 @@
-from config.config import Config
+from config.config import config
 from databases import Database
 
-config = Config()
 database = Database(config.DATABASE_URL)

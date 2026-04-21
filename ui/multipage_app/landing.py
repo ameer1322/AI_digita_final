@@ -1,14 +1,15 @@
 import streamlit as st
 
 
-if 'logged_in' not in st.session_state:
-    st.session_state['logged_in'] = False
+if "access_token" not in st.session_state:
+    st.session_state["access_token"] = None
 
 st.title("Amazshop")
 
 
-if st.session_state.logged_in:
+if st.session_state["access_token"]:
     pages = [
+        st.Page("pages/Home.py", title="Home"),
         st.Page("pages/Chat assistant.py", title="Chat assistant"),
         st.Page("pages/Favorite items.py",title="Favorite items"),
         st.Page("pages/Orders.py",title = "orders")

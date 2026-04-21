@@ -39,7 +39,10 @@ async def get_user_by_username(username:str)-> Optional[UserResponse]:
     """
     values = {"username": username}
     result = await database.fetch_one(query,values)
-    return UserResponse(**dict(result))
+    if result:
+        return UserResponse(**dict(result))
+    else:
+        raise ValueError("User not found")
 
 async def get_user_by_id(user_id:int)->User:
     query = """
