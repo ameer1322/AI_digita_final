@@ -7,13 +7,13 @@ from model.user_response_model import UserResponse
 from repository.database import database
 
 
-async def get_users()->List[User]:
+async def get_users()->List[UserResponse]:
     query="""
     SELECT * 
     FROM users
     """
     result = await database.fetch_all(query)
-    return [User(**row) for row in result]
+    return [UserResponse(**row) for row in result]
 
 async def create_user(user:User):
     query="""

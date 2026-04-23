@@ -14,7 +14,10 @@ oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 
 async def authenticate_user(credentials: LoginModel):
-    user = await users_service.get_user_by_username(credentials.username)
+    try:
+        user = await users_service.get_user_by_username(credentials.username)
+    except ValueError:
+        return False
     if not user or not await users_service.verify_password(credentials.password, user.hashed_password):
         return False
     return user

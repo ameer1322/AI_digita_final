@@ -13,7 +13,6 @@ from model.user_model import User
 from repository import users_repository
 
 async def get_users():
-
     return await users_repository.get_users()
 
 async def get_user_by_id(user_id:int):
