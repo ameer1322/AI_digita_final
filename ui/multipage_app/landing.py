@@ -12,7 +12,8 @@ if st.session_state["access_token"]:
         st.Page("pages/Home.py", title="Home"),
         st.Page("pages/Chat assistant.py", title="Chat assistant"),
         st.Page("pages/Favorite items.py",title="Favorite items"),
-        st.Page("pages/Orders.py",title = "orders")
+        st.Page("pages/Orders.py",title = "Orders"),
+        st.Page("pages/Logout.py",title = "Logout")
     ]
 else:
     pages = [

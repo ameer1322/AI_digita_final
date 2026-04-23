@@ -32,3 +32,12 @@ def login_user(username, password):
         st.session_state["access_token"] = token
         st.rerun()
     return response
+
+def logout():
+    url = f"{BASE_URL}/auth/logout"
+    token = st.session_state.get("access_token")
+    response = httpx.post(url, cookies={"access_token":token})
+    if response.status_code == 200:
+        st.session_state["access_token"]=None
+        st.rerun()
+    return response

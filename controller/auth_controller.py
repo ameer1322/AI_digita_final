@@ -57,5 +57,9 @@ async def login_for_access_token(credentials : LoginModel, response: Response):
     )
     return {"message": "Logged in successfully"}
 
+@router.post("/logout", status_code=status.HTTP_200_OK)
+async def logout(response : Response):
+    response.delete_cookie(key = config.COOKIE_NAME)
+    return {"message":"Logged out successfully!"}
 
 
