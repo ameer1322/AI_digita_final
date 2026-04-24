@@ -27,7 +27,7 @@ async def create_user(user: RegisterModel, response: Response):
         access_token = auth_service.create_access_token(created_user.username, created_user.user_id)
         response.set_cookie(
             key=config.COOKIE_NAME,
-            value=access_token,
+            value= access_token.jwt_token,
             httponly=config.COOKIE_HTTPONLY,
             secure=config.COOKIE_SECURE,
             samesite=config.COOKIE_SAMESITE,

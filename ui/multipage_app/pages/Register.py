@@ -54,9 +54,13 @@ with st.form("register"):
             for error in errors:
                 st.error(error)
         else:
-            result = register_user(first_name, last_name, age, email, phone, address,username, password)
-            st.session_state['check_registered'] = True
-            st.success("Registered successfully!")
+            response = register_user(first_name, last_name, age, email, phone, address,username, password)
+            if response.status_code == 200:
+                st.title(response)
+                st.session_state['check_registered'] = True
+                st.success("Registered successfully!")
+            else:
+                st.error("User already registered")
 
 # with st.sidebar:
 #     col1, _, col3 = st.columns([1, 0.5, 1])

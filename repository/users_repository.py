@@ -6,7 +6,6 @@ from model.user_model import User
 from model.user_response_model import UserResponse
 from repository.database import database
 
-
 async def get_users()->List[UserResponse]:
     query="""
     SELECT * 
@@ -15,13 +14,25 @@ async def get_users()->List[UserResponse]:
     result = await database.fetch_all(query)
     return [UserResponse(**row) for row in result]
 
-async def create_user(user:User):
+async def create_user(user:User) -> UserResponse:
     query="""
     INSERT INTO users (first_name, last_name, age, email, phone, address, username, hashed_password)
     VALUES(:first_name, :last_name, :age, :email, :phone, :address, :username, :hashed_password)
     """
     values={"first_name":user.first_name, "last_name":user.last_name, "age":user.age, "email":user.email, "phone":user.phone, "address":user.address, "username":user.username, "hashed_password":user.hashed_password}
-    await database.execute(query, values)
+    user_id = await database.execute(query, values)
+    user_response = UserResponse(
+        user_id = user_id,
+        first_name = user.first_name,
+        last_name = user.last_name,
+        age = user.age,
+        email = user.email,
+        phone= user.phone,
+        address= user.address,
+        username= user.username,
+        hashed_password= user.hashed_password
+    )
+    return user_response
 
 async def update_user(user_id:int, first_name:str, last_name:str, email:str, age:int):
     query = """

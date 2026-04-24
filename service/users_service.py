@@ -21,7 +21,7 @@ async def get_user_by_id(user_id:int):
 async def get_user_by_username(username)-> UserResponse:
     return await users_repository.get_user_by_username(username)
 
-async def create_user(user:RegisterModel):
+async def create_user(user:RegisterModel) -> UserResponse:
     hashed_password = pwd_context.hash(user.password)
     hashed_user = User(
         first_name=user.first_name,

@@ -17,7 +17,7 @@ CREATE TABLE users(
     email VARCHAR(255) NOT NULL UNIQUE,
     phone VARCHAR(20) NOT NULL,
     address VARCHAR(255) NOT NULL,
-    username VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL UNIQUE,
     hashed_password VARCHAR(255) NOT NULL,
     join_date DATETIME DEFAULT CURRENT_TIMESTAMP
 );
