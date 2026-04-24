@@ -42,7 +42,13 @@ def logout():
         st.rerun()
     return response
 
-def get_all_items():
+def get_all_products():
     url = f"{BASE_URL}/products/"
     response = httpx.get(url)
     return response
+
+def get_items_by_name(name:str):
+    url = f"{BASE_URL}/products/{name}"
+    response = httpx.get(url)
+    return response
+
