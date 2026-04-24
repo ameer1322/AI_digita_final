@@ -41,3 +41,8 @@ def logout():
         st.session_state["access_token"]=None
         st.rerun()
     return response
+
+def get_all_items():
+    url = f"{BASE_URL}/products/"
+    response = httpx.get(url)
+    return response

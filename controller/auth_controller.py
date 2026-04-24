@@ -49,7 +49,7 @@ async def login_for_access_token(credentials : LoginModel, response: Response):
     access_token = auth_service.create_access_token(user.username, user.user_id)
     response.set_cookie(
         key=config.COOKIE_NAME,
-        value=access_token,
+        value=access_token.jwt_token,
         httponly=config.COOKIE_HTTPONLY,
         secure=config.COOKIE_SECURE,
         samesite=config.COOKIE_SAMESITE,

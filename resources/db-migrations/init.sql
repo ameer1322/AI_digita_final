@@ -58,3 +58,12 @@ CREATE TABLE order_item(
     FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 
+INSERT INTO products (name, price, quantity)
+VALUES
+("Hunting knife", 30, 70),
+("Graphics card", 1200, 7),
+("Desktop computer", 2400, 5),
+("Kitchen knife", 20, 150),
+("T-shirt", 15, 160),
+("Hat", 10, 86),
+("Sun screen", 5, 200)
