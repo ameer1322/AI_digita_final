@@ -36,12 +36,15 @@ async def delete_product(name:str):
     await database.execute(query,values)
 
 
-async def get_product_by_name(name:str):
-    query = """
-    SELECT * FROM products WHERE name = :name
+async def get_products_by_name(products:str):
+    words = products.strip().split()
+    conditions = " OR ".join([f"name LIKE :word{i}" for i in range(len(words))])
+    query = f"""
+    SELECT * FROM products WHERE {conditions}
         """
-    values = {"name": name}
-    return await database.fetch_one(query, values)
+    values = {f"word{i}":f"%{word}%" for i,word in enumerate(words)}
+    result = await database.fetch_all(query, values)
+    return result
 
 async def get_product_quantity_by_name(name:str):
     query="""

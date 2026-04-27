@@ -47,11 +47,10 @@ async def update_stock(name:str ,product_update_quantity :ProductUpdateQuantity)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail=str(e))
 
-@router.get("/{name}",status_code=status.HTTP_200_OK)
-async def get_product_by_name(name:str):
+@router.get("/{products}",status_code=status.HTTP_200_OK)
+async def get_products_by_name(products:str):
     try:
-        result = await products_service.get_product_by_name(name)
-        print(result)
+        result = await products_service.get_products_by_name(products)
         return result
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

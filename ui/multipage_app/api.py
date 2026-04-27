@@ -47,7 +47,7 @@ def get_all_products():
     response = httpx.get(url)
     return response
 
-def get_items_by_name(name:str):
+def get_products_by_name(name:str):
     url = f"{BASE_URL}/products/{name}"
     response = httpx.get(url)
     return response

@@ -43,5 +43,5 @@ async def update_stock(name:str, quantity:int):
         raise ValueError("Not enough products left in stock")
     return await products_repository.update_stock(name,quantity)
 
-async def get_product_by_name(name:str):
-    return await products_repository.get_product_by_name(name)
+async def get_products_by_name(products:str):
+    return await products_repository.get_products_by_name(products)
