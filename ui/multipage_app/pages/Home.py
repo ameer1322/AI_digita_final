@@ -1,5 +1,5 @@
 import streamlit as st
-from api import get_all_products, get_products_by_name
+from api import get_all_products, get_products_by_name, add_to_cart
 import pandas as pd
 from sqlalchemy.orm import sessionmaker
 
@@ -102,4 +102,36 @@ if st.session_state["products_df"].empty:
     st.error("Products not found")
     st.session_state["products_df"]=pd.DataFrame(fetch_products(),columns=["name","price","quantity"])
 
-st.write(st.session_state["products_df"])
+if st.session_state["access_token"]:
+    for _, row in st.session_state["products_df"].iterrows():
+        col1, col2, col3, col4, col5 = st.columns([3,2,1,1,2])
+
+        with col1:
+            st.write(row["name"])
+        with col2:
+            st.write(f"${row['price']}")
+        with col3:
+            st.write(row["quantity"])
+        with col4:
+            order_quantity= st.number_input(
+                "Amount", min_value=1, value=1, step=1,
+                key=f"qty_{row['name']}"
+            )
+        with col5:
+            if st.button("Order", key=f"order_{row['name']}"):
+                response = add_to_cart(row["name"],order_quantity)
+                if response.status_code == 200:
+                    st.success(f"Ordered {row['name']}!")
+                else:
+                    st.error(f"Failed to order {row['name']}!")
+else:
+    for _, row in st.session_state["products_df"].iterrows():
+        col1,col2,col3 = st.columns([3,2,1])
+
+        with col1:
+            st.write(row["name"])
+        with col2:
+            st.write(f"${row['price']}")
+        with col3:
+            st.write(row["quantity"])
+

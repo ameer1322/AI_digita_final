@@ -52,3 +52,12 @@ def get_products_by_name(name:str):
     response = httpx.get(url)
     return response
 
+def add_to_cart(product_id:int, quantity:int):
+    url = f"{BASE_URL}/orders"
+    token = st.session_state.get("access_token")
+    response = httpx.post(
+        url,
+        json={"product_id":product_id,"quantity":quantity},
+        headers={"Authorization":f"Bearer {token}"}
+    )
+    return response

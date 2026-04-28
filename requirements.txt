@@ -13,3 +13,4 @@ streamlit
 jose
 passlib
 pandas
+PyJWT
