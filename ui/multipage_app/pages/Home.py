@@ -1,7 +1,8 @@
 import streamlit as st
-from api import get_all_products, get_products_by_name, add_to_cart
+from api import get_all_products, get_products_by_name, add_to_cart,is_token_expired
 import pandas as pd
-from sqlalchemy.orm import sessionmaker
+
+
 
 
 if "products_df" not in st.session_state:
@@ -10,6 +11,7 @@ if "products_df" not in st.session_state:
 if "refresh_items" not in st.session_state:
     st.session_state["refresh_items"] = False
 
+token = st.session_state["access_token"]
 
 
 @st.cache_data(ttl=60)
@@ -102,7 +104,7 @@ if st.session_state["products_df"].empty:
     st.error("Products not found")
     st.session_state["products_df"]=pd.DataFrame(fetch_products(),columns=["name","price","quantity"])
 
-if st.session_state["access_token"]:
+if token and not is_token_expired(token):
     for _, row in st.session_state["products_df"].iterrows():
         col1, col2, col3, col4, col5 = st.columns([3,2,1,1,2])
 
@@ -120,7 +122,7 @@ if st.session_state["access_token"]:
         with col5:
             if st.button("Order", key=f"order_{row['name']}"):
                 response = add_to_cart(row["name"],order_quantity)
-                if response.status_code == 200:
+                if response.status_code == 201:
                     st.success(f"Ordered {row['name']}!")
                 else:
                     st.error(f"Failed to order {row['name']}!")

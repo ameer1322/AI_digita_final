@@ -24,12 +24,12 @@ async def get_orders():
 async def handle_order(order : OrderRequest, authorization: str= Header()):
     token = authorization.replace("Bearer ","")
     try:
-        payload = jwt.decode(token, config.SECRET_KEY, algorithm = [config.ALGORITHM])
-        user_id = payload["user_id"]
+        payload = jwt.decode(token, config.SECRET_KEY, algorithms = [config.ALGORITHM])
+        user_id = payload["id"]
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Token expired or invalid")
     return await order_service.handle_order(order, user_id)
 
-@router.delete("/",status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{order_id}",status_code=status.HTTP_204_NO_CONTENT)
 async def delete_order(order_id : int):
     return await order_service.delete_order(order_id)

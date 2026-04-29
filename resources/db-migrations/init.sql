@@ -4,7 +4,7 @@ CREATE DATABASE main;
 
 USE main;
 
-DROP TABLE IF EXISTS order_item;
+DROP TABLE IF EXISTS order_product;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS users;
@@ -47,7 +47,7 @@ CREATE TABLE orders(
     FOREIGN KEY (user_id) REFERENCES users(user_id) on DELETE CASCADE
 );
 
-CREATE TABLE order_item(
+CREATE TABLE order_product(
     order_id INT NOT NULL,
     product_id INT NOT NULL ,
     quantity INT NOT NULL,

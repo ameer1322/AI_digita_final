@@ -1,3 +1,4 @@
+import jwt
 from starlette import status
 
 from fastapi import APIRouter, Depends, HTTPException, Response
@@ -55,6 +56,7 @@ async def login_for_access_token(credentials : LoginModel, response: Response):
         samesite=config.COOKIE_SAMESITE,
         max_age=config.COOKIE_MAX_AGE
     )
+    print(jwt.decode(access_token.jwt_token, options={"verify_signature":False}))
     return {"message": "Logged in successfully"}
 
 @router.post("/logout", status_code=status.HTTP_200_OK)

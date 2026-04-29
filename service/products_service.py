@@ -45,3 +45,9 @@ async def update_stock(name:str, quantity:int):
 
 async def get_products_by_name(products:str):
     return await products_repository.get_products_by_name(products)
+
+async def get_product_id_by_name(product_name: str):
+    result = await products_repository.get_product_id_by_name(product_name)
+    if not result:
+        return None
+    return result

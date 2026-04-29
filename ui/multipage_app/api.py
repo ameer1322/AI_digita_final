@@ -1,4 +1,7 @@
+from datetime import datetime
+
 import httpx
+import jwt
 import streamlit as st
 BASE_URL = "http://localhost:8000"
 
@@ -33,6 +36,16 @@ def login_user(username, password):
         st.rerun()
     return response
 
+def is_token_expired(token: str)-> bool:
+    try:
+        payload = jwt.decode(token, options={"verify_signature":False})
+        exp = payload.get("exp")
+        if exp is None:
+            return True
+        return datetime.utcnow().timestamp() > exp
+    except jwt.PyJWTError:
+        return True
+
 def logout():
     url = f"{BASE_URL}/auth/logout"
     token = st.session_state.get("access_token")
@@ -52,12 +65,12 @@ def get_products_by_name(name:str):
     response = httpx.get(url)
     return response
 
-def add_to_cart(product_id:int, quantity:int):
-    url = f"{BASE_URL}/orders"
+def add_to_cart(product_name: str, quantity:int):
+    url = f"{BASE_URL}/order/"
     token = st.session_state.get("access_token")
-    response = httpx.post(
+    response = httpx.put(
         url,
-        json={"product_id":product_id,"quantity":quantity},
+        json={"product_name":product_name,"quantity":quantity},
         headers={"Authorization":f"Bearer {token}"}
     )
     return response

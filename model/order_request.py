@@ -1,7 +1,6 @@
-import datetime
 
 from pydantic import BaseModel
 
 class OrderRequest(BaseModel):
-    product_id : int
+    product_name : str
     quantity: int

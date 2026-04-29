@@ -20,7 +20,7 @@ async def get_order_by_user(user_id : int):
     """
     values ={"user_id":user_id}
     result = await database.fetch_one(query,values)
-    return result
+    return result[0]
 
 async def check_order_exists(order_id:int):
     query="""
@@ -31,37 +31,37 @@ async def check_order_exists(order_id:int):
     result = await database.fetch_one(query,values)
     return result
 
-async def create_new_order(order :OrderRequest, user_id:int):
+async def create_new_order(user_id:int):
     query = """
     INSERT INTO orders (user_id)
     VALUES(:user_id)
     """
     values = {"user_id":user_id}
-    await database.execute(query,values)
+    return await database.execute(query,values)
 
-async def create_new_order_item(order:OrderRequest, order_id):
+async def create_new_order_product(order:OrderRequest, order_id, product_id:int):
     query = """
-    INSERT INTO order_item (order_id, item_id, quantity)
-    VALUES(:order_id, :item_id, :quantity)
+    INSERT INTO order_product (order_id, product_id, quantity)
+    VALUES(:order_id, :product_id, :quantity)
     """
-    values = {"order_id":order_id,"item_id":order.product_id,"quantity":order.quantity}
+    values = {"order_id":order_id,"product_id":product_id,"quantity":order.quantity}
     await database.execute(query,values)
 
-async def check_order_item(order:OrderRequest, user_id:int):
+async def check_order_product(product_id: int, order_id:int):
     query="""
-    SELECT * FROM order_item
-    WHERE user_id = :user_id and item_id = :item_id
+    SELECT * FROM order_product
+    WHERE order_id = :order_id and product_id = :product_id
     """
-    values = {"user_id":user_id, "item_id":order.product_id}
+    values = {"order_id":order_id, "product_id":product_id}
     return await database.fetch_one(query,values)
 
-async def add_item_to_order(order:OrderRequest,order_id:int):
+async def add_product_to_order(order:OrderRequest,order_id:int, product_id):
     query="""
-    UPDATE order_item
+    UPDATE order_product
     SET quantity = quantity+:quantity
-    WHERE order_id = :order_id and item_id = :item_id
+    WHERE order_id = :order_id and product_id = :product_id
     """
-    values = {"quantity":order.quantity,"order_id":order_id,"item_id":order.product_id}
+    values = {"quantity":order.quantity,"order_id":order_id,"product_id":product_id}
     await database.execute(query,values)
 
 async def delete_order(order_id:int):

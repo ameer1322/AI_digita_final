@@ -44,6 +44,7 @@ async def get_products_by_name(products:str):
         """
     values = {f"word{i}":f"%{word}%" for i,word in enumerate(words)}
     result = await database.fetch_all(query, values)
+    print(result)
     return result
 
 async def get_product_quantity_by_name(name:str):
@@ -65,3 +66,12 @@ async def update_stock(name:str, quantity:int):
     values = {"name":name,"quantity":quantity}
     result = await database.execute(query,values)
     return result
+
+async def get_product_id_by_name(product_name: str):
+    query = """
+    SELECT product_id FROM products
+    WHERE name = :name
+    """
+    values = {"name" : product_name}
+    result = await database.fetch_one(query,values)
+    return result[0]

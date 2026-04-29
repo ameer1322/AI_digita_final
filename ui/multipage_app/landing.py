@@ -1,13 +1,18 @@
-import streamlit as st
+from datetime import datetime
 
+import jwt
+import streamlit as st
+from api import is_token_expired
 
 if "access_token" not in st.session_state:
     st.session_state["access_token"] = None
 
+token = st.session_state["access_token"]
+
 st.title("Amazshop")
 
 
-if st.session_state["access_token"]:
+if token and not is_token_expired(token):
     pages = [
         st.Page("pages/Home.py", title="Home"),
         st.Page("pages/Order.py",title = "Order"),
@@ -24,5 +29,3 @@ else:
 
 pg = st.navigation(pages)
 pg.run()
-
-
