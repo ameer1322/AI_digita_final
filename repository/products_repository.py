@@ -1,6 +1,9 @@
 from typing import Optional, List
 
 import json
+
+from streamlit import rerun
+
 from repository.database import database
 
 async def get_products():
@@ -75,3 +78,12 @@ async def get_product_id_by_name(product_name: str):
     values = {"name" : product_name}
     result = await database.fetch_one(query,values)
     return result[0]
+
+async def get_inventory_by_id(product_id:int):
+    query = """
+    SELECT inventory FROM products
+    WHERE product_id = :product_id
+    """
+    values = {"product_id":product_id}
+    result = await database.fetch_one(query,values)
+    return result

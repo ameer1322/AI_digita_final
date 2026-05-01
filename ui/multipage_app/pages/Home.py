@@ -96,7 +96,7 @@ with st.form("search_function"):
 
 st.divider()
 
-st.write("Available items")
+st.subheader("Available items")
 
 
 

@@ -55,3 +55,10 @@ async def get_products_by_name(products:str):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
+@router.get("/get_inventory/{product_id}", status_code=status.HTTP_200_OK)
+async def get_inventory_by_id(product_id:int):
+    try:
+        result = await products_service.get_inventory_by_id(product_id)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

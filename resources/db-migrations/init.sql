@@ -42,6 +42,7 @@ CREATE TABLE favorites(
 CREATE TABLE orders(
     order_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
+    order_status BOOL DEFAULT FALSE,
     order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (user_id) REFERENCES users(user_id) on DELETE CASCADE

@@ -34,10 +34,14 @@ async def create_order_product(order: OrderRequest, order_id: int, product_id:in
 
 async def handle_order(order : OrderRequest, user_id):
     product_id = await products_service.get_product_id_by_name(order.product_name)
+    product_inventory = await products_service.get_inventory_by_id(product_id)
     order_id = await get_order_by_user(user_id)
     if order_id:
         check_order_product = await order_repository.check_order_product(product_id, order_id)
         if check_order_product:
+            amount_in_user_order = check_order_product[2]
+            if amount_in_user_order + order.quantity > product_inventory:
+                raise ValueError("Order is bigger than inventory!")
             return await add_product_to_order(order, order_id, product_id)
         return await order_repository.create_new_order_product(order, order_id, product_id)
     order_id = await create_new_order(order,user_id)
