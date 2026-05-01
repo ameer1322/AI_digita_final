@@ -55,3 +55,7 @@ async def get_product_id_by_name(product_name: str):
 async def get_inventory_by_id(product_id: int):
     result = await products_repository.get_inventory_by_id(product_id)
     return result[0]
+
+async def reduce_inventory(product_id: int, amount:int):
+    result = await products_repository.reduce_inventory(product_id,amount)
+    return result

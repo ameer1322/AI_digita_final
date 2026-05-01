@@ -1,9 +1,10 @@
 import streamlit as st
 from api import get_all_products, get_products_by_name, add_to_cart,is_token_expired, add_to_favorites
+import sys
+import os
+sys.path.append(os.path.dirname(__file__))
+from Order import fetch_orders
 import pandas as pd
-
-
-
 
 if "products_df" not in st.session_state:
     st.session_state["products_df"] = None
@@ -131,6 +132,7 @@ if token and not is_token_expired(token):
                 response = add_to_cart(row["name"],order_quantity)
                 if response.status_code == 201:
                     st.success(f"Ordered {row['name']}!")
+                    st.session_state["refresh_orders"] = True
                 else:
                     st.error(f"Failed to order {row['name']}!")
         with col6:

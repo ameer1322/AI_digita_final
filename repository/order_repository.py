@@ -13,10 +13,10 @@ async def get_orders():
     """
     return await database.fetch_all(query)
 
-async def get_order_by_user(user_id : int):
+async def get_order_id_by_user(user_id : int):
     query="""
     SELECT order_id FROM orders
-    WHERE user_id = :user_id
+    WHERE user_id = :user_id AND order_status = FALSE
     """
     values ={"user_id":user_id}
     result = await database.fetch_one(query,values)
@@ -72,16 +72,28 @@ async def delete_order(order_id:int):
     values = {"order_id":order_id}
     await database.execute(query,values)
 
-async def get_user_orders(user_id):
+async def get_user_unconfirmed_order(user_id):
     query = """
-    SELECT name, quantity, price FROM orders
+    SELECT name, quantity, price, order_product.product_id FROM orders
     JOIN order_product ON orders.order_id = order_product.order_id
     JOIN products ON order_product.product_id = products.product_id
-    WHERE user_id = :user_id
-    
+    WHERE user_id = :user_id AND order_status = FALSE
     """
     values = {"user_id": user_id}
-    return await database.fetch_all(query,values)
+    result = await database.fetch_all(query,values)
+    return result
+
+async def get_user_confirmed_orders(user_id):
+    query = """
+    SELECT name, quantity, price, orders.order_id FROM orders
+    JOIN order_product ON orders.order_id = order_product.order_id
+    JOIN products ON order_product.product_id = products.product_id
+    WHERE user_id = :user_id AND order_status = TRUE
+    """
+    values = {"user_id": user_id}
+    result = await database.fetch_all(query,values)
+    return result
+
 
 async def remove_from_order(order_id:int, product_id:int, amount:int):
     query = """
@@ -99,3 +111,12 @@ async def remove_product_if_zero(product_id):
     """
     values = {"product_id":product_id}
     await database.execute(query,values)
+
+async def confirm_order(user_id :int):
+    query = """
+    UPDATE orders
+    SET order_status = TRUE
+    WHERE user_id = :user_id AND order_status = FALSE
+    """
+    values = {"user_id":user_id}
+    return await database.execute(query,values)

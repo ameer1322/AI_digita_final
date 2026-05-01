@@ -73,7 +73,7 @@ def add_to_cart(product_name: str, quantity:int):
     response = httpx.put(
         url,
         json={"product_name":product_name,"quantity":quantity},
-        headers={"Authorization":f"Bearer {token}"}
+        headers={"Authorization":f"Bearer: {token}"}
     )
     return response
 
@@ -83,18 +83,29 @@ def add_to_favorites(product_name:str):
     response = httpx.put(
         url,
         json={"product_name":product_name},
-        headers = {"Authorization":f"Bearer {token}"}
+        headers = {"Authorization":f"Bearer: {token}"}
     )
     return response
 
-def get_user_orders():
-    url = f"{BASE_URL}/order/get_user_orders"
+def get_user_unconfirmed_order():
+    url = f"{BASE_URL}/order/get_user_unconfirmed_order"
     token = st.session_state.get("access_token")
     response = httpx.get(
         url,
-        headers = {"Authorization":f"Bearer {token}"}
+        headers = {"Authorization":f"Bearer: {token}"}
     )
     return response
+
+
+def get_user_confirmed_orders():
+    url = f"{BASE_URL}/order/get_user_confirmed_orders"
+    token = st.session_state.get("access_token")
+    response = httpx.get(
+        url,
+        headers = {"Authorization" : f"Bearer: {token}"}
+    )
+    return response
+
 
 def remove_from_order(product_name:str, amount:int):
     url = f"{BASE_URL}/order/remove_from_order"
@@ -102,6 +113,17 @@ def remove_from_order(product_name:str, amount:int):
     response = httpx.put(
         url,
         json={"product_name":product_name,"amount":amount},
-        headers = {"Authorization": f"Bearer {token}"}
+        headers = {"Authorization": f"Bearer: {token}"}
     )
     return response
+
+def confirm_order():
+    url = f"{BASE_URL}/order/confirm_order"
+    token = st.session_state.get("access_token")
+    response = httpx.put(
+        url,
+        headers = {"Authorization": f"Bearer: {token}"}
+    )
+    print(response)
+    return response
+

@@ -87,3 +87,13 @@ async def get_inventory_by_id(product_id:int):
     values = {"product_id":product_id}
     result = await database.fetch_one(query,values)
     return result
+
+async def reduce_inventory(product_id: int, amount: int):
+    query = """
+    UPDATE products
+    SET inventory = inventory - :amount
+    WHERE product_id = :product_id
+    """
+    values = {"amount":amount, "product_id":product_id}
+    result = await database.execute(query,values)
+    return result
