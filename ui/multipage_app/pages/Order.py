@@ -3,6 +3,7 @@ import streamlit as st
 
 from api import get_user_orders, remove_from_order
 
+@st.cache_data(ttl=60)
 def fetch_orders():
     response = get_user_orders()
     if response.status_code==200:
@@ -42,6 +43,7 @@ for _, row in st.session_state["orders"].iterrows():
                 st.success(f"Removed {row['name']}!")
             else:
                 st.error(f"Failed to Remove {row['name']}!")
+            fetch_orders.clear()
             st.rerun()
 
 
