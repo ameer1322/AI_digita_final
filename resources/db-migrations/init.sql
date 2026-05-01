@@ -26,7 +26,7 @@ CREATE TABLE products(
     product_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL UNIQUE,
     price DECIMAL(10,2) NOT NULL,
-    quantity INT NOT NULL
+    inventory INT NOT NULL
 );
 
 CREATE TABLE favorites(
@@ -58,7 +58,7 @@ CREATE TABLE order_product(
     FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 
-INSERT INTO products (name, price, quantity)
+INSERT INTO products (name, price, inventory)
 VALUES
 ("Hunting knife", 30, 70),
 ("Graphics card", 1200, 7),

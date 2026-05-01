@@ -20,7 +20,7 @@ async def get_order_by_user(user_id : int):
     """
     values ={"user_id":user_id}
     result = await database.fetch_one(query,values)
-    return result[0]
+    return result
 
 async def check_order_exists(order_id:int):
     query="""
@@ -72,3 +72,30 @@ async def delete_order(order_id:int):
     values = {"order_id":order_id}
     await database.execute(query,values)
 
+async def get_user_orders(user_id):
+    query = """
+    SELECT name, quantity, price FROM orders
+    JOIN order_product ON orders.order_id = order_product.order_id
+    JOIN products ON order_product.product_id = products.product_id
+    WHERE user_id = :user_id
+    
+    """
+    values = {"user_id": user_id}
+    return await database.fetch_all(query,values)
+
+async def remove_from_order(order_id:int, product_id:int, amount:int):
+    query = """
+    UPDATE order_product
+    SET quantity = quantity - :amount
+    WHERE order_id = :order_id AND product_id = :product_id
+    """
+    values = {"order_id":order_id, "product_id":product_id, "amount": amount}
+    return await database.execute(query,values)
+
+async def remove_product_if_zero(product_id):
+    query="""
+    DELETE FROM order_product
+    WHERE product_id = :product_id AND quantity = 0
+    """
+    values = {"product_id":product_id}
+    await database.execute(query,values)

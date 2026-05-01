@@ -6,6 +6,7 @@ from fastapi.security import HTTPAuthorizationCredentials
 from starlette import status
 from model.order_request import OrderRequest
 from config.config import Config
+from model.remove_from_order_request import RemoveFromOrderRequest
 from service import order_service
 import jwt
 
@@ -20,11 +21,21 @@ config = Config()
 async def get_orders():
     return await order_service.get_orders()
 
+@router.get("/get_order_by_user",status_code=status.HTTP_200_OK)
+async def get_order_by_user(authorization: str = Header()):
+    token = authorization.replace("Bearer ","")
+    try:
+        payload = jwt.decode(token, config.SECRET_KEY, algorithms= [config.ALGORITHM])
+        user_id = payload["id"]
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Token expired or invalid")
+    return await order_service.get_order_by_user(user_id)
+
 @router.put("/",status_code=status.HTTP_201_CREATED)
 async def handle_order(order : OrderRequest, authorization: str= Header()):
     token = authorization.replace("Bearer ","")
     try:
-        payload = jwt.decode(token, config.SECRET_KEY, algorithms = [config.ALGORITHM])
+        payload = jwt.decode(token, config.SECRET_KEY, algorithms= [config.ALGORITHM])
         user_id = payload["id"]
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Token expired or invalid")
@@ -33,3 +44,24 @@ async def handle_order(order : OrderRequest, authorization: str= Header()):
 @router.delete("/{order_id}",status_code=status.HTTP_204_NO_CONTENT)
 async def delete_order(order_id : int):
     return await order_service.delete_order(order_id)
+
+@router.get("/get_user_orders",status_code=status.HTTP_200_OK)
+async def get_user_orders(authorization: str = Header()):
+    token = authorization.replace("Bearer ","")
+    try:
+        payload = jwt.decode(token, config.SECRET_KEY, algorithms= [config.ALGORITHM])
+        user_id = payload["id"]
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Token expired or invalid")
+    return await order_service.get_user_orders(user_id)
+
+@router.put("/remove_from_order",status_code=status.HTTP_200_OK)
+async def remove_from_order(remove_request : RemoveFromOrderRequest,authorization : str = Header()):
+    token = authorization.replace("Bearer ", "")
+    try:
+        payload = jwt.decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
+        user_id = payload["id"]
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Token expired or invalid")
+    return await order_service.remove_from_order(remove_request.product_name,remove_request.amount,user_id)
+

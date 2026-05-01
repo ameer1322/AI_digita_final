@@ -1,8 +1,10 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import httpx
 import jwt
 import streamlit as st
+
+
 BASE_URL = "http://localhost:8000"
 
 
@@ -42,7 +44,7 @@ def is_token_expired(token: str)-> bool:
         exp = payload.get("exp")
         if exp is None:
             return True
-        return datetime.utcnow().timestamp() > exp
+        return datetime.now(timezone.utc).timestamp() > exp
     except jwt.PyJWTError:
         return True
 
@@ -72,5 +74,34 @@ def add_to_cart(product_name: str, quantity:int):
         url,
         json={"product_name":product_name,"quantity":quantity},
         headers={"Authorization":f"Bearer {token}"}
+    )
+    return response
+
+def add_to_favorites(product_name:str):
+    url = f"{BASE_URL}/products/add_to_favorites"
+    token = st.session_state.get("access_token")
+    response = httpx.put(
+        url,
+        json={"product_name":product_name},
+        headers = {"Authorization":f"Bearer {token}"}
+    )
+    return response
+
+def get_user_orders():
+    url = f"{BASE_URL}/order/get_user_orders"
+    token = st.session_state.get("access_token")
+    response = httpx.get(
+        url,
+        headers = {"Authorization":f"Bearer {token}"}
+    )
+    return response
+
+def remove_from_order(product_name:str, amount:int):
+    url = f"{BASE_URL}/order/remove_from_order"
+    token = st.session_state.get("access_token")
+    response = httpx.put(
+        url,
+        json={"product_name":product_name,"amount":amount},
+        headers = {"Authorization": f"Bearer {token}"}
     )
     return response
