@@ -124,6 +124,5 @@ def confirm_order():
         url,
         headers = {"Authorization": f"Bearer: {token}"}
     )
-    print(response)
     return response
 

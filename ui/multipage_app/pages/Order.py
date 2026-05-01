@@ -63,10 +63,14 @@ if not st.session_state["unconfirmed_order"].empty:
                 fetch_unconfirmed_order.clear()
                 st.rerun()
     if st.button("Place order"):
-        confirm_order()
-        fetch_unconfirmed_order.clear()
-        fetch_confirmed_orders.clear()
-        st.rerun()
+        response = confirm_order()
+        if response.status_code == 400:
+            st.error("Not enough products in inventory!")
+        else:
+            st.success("Order confirmed!")
+            fetch_unconfirmed_order.clear()
+            fetch_confirmed_orders.clear()
+            st.rerun()
 else:
     st.subheader("No order yet!")
 

@@ -84,4 +84,7 @@ async def confirm_order(authorization:str = Header()):
         user_id = payload["id"]
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Token expired or invalid")
-    return await order_service.confirm_order(user_id)
+    try:
+        return await order_service.confirm_order(user_id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))

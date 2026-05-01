@@ -129,12 +129,15 @@ if token and not is_token_expired(token):
             )
         with col5:
             if st.button("Order", key=f"order_{row['name']}"):
-                response = add_to_cart(row["name"],order_quantity)
-                if response.status_code == 201:
-                    st.success(f"Ordered {row['name']}!")
-                    st.session_state["refresh_orders"] = True
+                if row["inventory"]<order_quantity:
+                    st.error("Not enough products in inventory!")
                 else:
-                    st.error(f"Failed to order {row['name']}!")
+                    response = add_to_cart(row["name"],order_quantity)
+                    if response.status_code == 201:
+                        st.success(f"Ordered {row['name']}!")
+                        st.session_state["refresh_orders"] = True
+                    else:
+                        st.error(f"Failed to order {row['name']}!")
         with col6:
             if st.button("Favorite", key = f"favorite_{row['name']}"):
                 response = add_to_favorites(row['name'])
