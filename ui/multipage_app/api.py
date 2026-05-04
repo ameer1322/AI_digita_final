@@ -141,3 +141,12 @@ def get_user_favorites():
         headers = {"Authorization" : f"Bearer: {token}"}
     )
     return response
+
+def delete_account():
+    url = f"{BASE_URL}/users/"
+    token = st.session_state.get("access_token")
+    response = httpx.delete(
+        url,
+        headers={"Authorization":f"Bearer: {token}"}
+    )
+    return response

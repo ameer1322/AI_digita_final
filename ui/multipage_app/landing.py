@@ -18,7 +18,7 @@ if token and not is_token_expired(token):
         st.Page("pages/Order.py",title = "Order"),
         st.Page("pages/Favorite items.py",title="Favorite items"),
         st.Page("pages/Chat assistant.py", title="Chat assistant"),
-        st.Page("pages/Logout.py",title = "Logout")
+        st.Page("pages/Logout, Delete account.py",title = "Logout/Delete account")
     ]
 else:
     pages = [

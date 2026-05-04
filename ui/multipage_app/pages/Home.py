@@ -116,7 +116,7 @@ if token and not is_token_expired(token):
     for _, row in st.session_state["products_df"].iterrows():
         col1, col2, col3, col4, col5, col6 = st.columns([3,2,1,2,2,2])
 
-        if row["inventory"] != 0:
+        if row["inventory"] > 0:
             with col1:
                 st.write(row["name"])
             with col2:
@@ -160,11 +160,12 @@ else:
         st.write("Inventory")
     for _, row in st.session_state["products_df"].iterrows():
 
-        col1,col2,col3 = st.columns([3,2,1])
-        with col1:
-            st.write(row["name"])
-        with col2:
-            st.write(f"${row['price']}")
-        with col3:
-            st.write(str(row["inventory"]))
+        if row["inventory"] > 0:
+            col1,col2,col3 = st.columns([3,2,1])
+            with col1:
+                st.write(row["name"])
+            with col2:
+                st.write(f"${row['price']}")
+            with col3:
+                st.write(str(row["inventory"]))
 
