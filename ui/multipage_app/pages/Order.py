@@ -1,7 +1,9 @@
+import datetime
+
 import pandas as pd
 import streamlit as st
 
-from api import get_user_unconfirmed_order, get_user_confirmed_orders, remove_from_order, confirm_order
+from api import get_user_unconfirmed_order, get_user_confirmed_orders, remove_from_order, confirm_order, delete_order
 
 
 
@@ -29,7 +31,13 @@ st.session_state["unconfirmed_order"] = pd.DataFrame(fetch_unconfirmed_order())
 
 st.session_state["confirmed_orders"] = pd.DataFrame(fetch_confirmed_orders())
 
+
+st.session_state["confirmed_orders"]["order_date"] = pd.to_datetime(
+    st.session_state["confirmed_orders"]["order_date"]
+).dt.strftime("%B %d, %Y %H:%M")
+
 if not st.session_state["unconfirmed_order"].empty:
+    order_id = st.session_state["unconfirmed_order"]["order_id"][0]
     col1, col2, col3, col4, col5 = st.columns([1,1,1,1,1])
     with col1:
         st.write("Product")
@@ -50,18 +58,22 @@ if not st.session_state["unconfirmed_order"].empty:
             st.write(str(row["price"]*row["quantity"])+"$")
         with col4:
             remove_quantity = st.number_input(
-                "Amount", min_value=1, value=1, step=1, max_value=row["quantity"],
+                "Amount", min_value=1, value=1, step=1,
                 key=f"qty_{row['name']}"
             )
         with col5:
             if st.button("Remove", key = f"remove {row['name']}"):
-                response = remove_from_order(row["name"],remove_quantity)
-                if response.status_code == 200:
-                    st.success(f"Removed {row['name']}!")
+                if row["quantity"]>=remove_quantity:
+                    response = remove_from_order(row["name"],remove_quantity)
+                    if response.status_code == 200:
+                        st.success(f"Removed {row['name']}!")
+                    else:
+                        st.error(f"Failed to Remove {row['name']}!")
+                    fetch_unconfirmed_order.clear()
+                    st.rerun()
                 else:
-                    st.error(f"Failed to Remove {row['name']}!")
-                fetch_unconfirmed_order.clear()
-                st.rerun()
+                    st.error("Choose a smaller amount to remove")
+
     if st.button("Place order"):
         response = confirm_order()
         if response.status_code == 400:
@@ -71,6 +83,13 @@ if not st.session_state["unconfirmed_order"].empty:
             fetch_unconfirmed_order.clear()
             fetch_confirmed_orders.clear()
             st.rerun()
+
+    if st.button("Delete order"):
+        response = delete_order(order_id)
+        st.success("Order deleted!")
+        fetch_unconfirmed_order.clear()
+        fetch_confirmed_orders.clear()
+        st.rerun()
 else:
     st.subheader("No order yet!")
 
@@ -79,19 +98,21 @@ st.subheader("Past orders")
 
 if not st.session_state["confirmed_orders"].empty:
 
-    col1,col2,col3 = st.columns([1,1,1])
+    col1,col2,col3,col4 = st.columns([1,1,1,1])
     with col1:
         st.write("Product")
     with col2:
         st.write("Quantity")
     with col3:
         st.write("Total price")
+    with col4:
+        st.write("Order date")
     prev_order_id = None
     for _, row in st.session_state["confirmed_orders"].iterrows():
         if prev_order_id is not None and row["order_id"] != prev_order_id:
             st.divider()
 
-        col1, col2, col3 = st.columns([1,1,1])
+        col1, col2, col3, col4 = st.columns([1,1,1,1])
 
         with col1:
             st.write(row["name"])
@@ -99,5 +120,7 @@ if not st.session_state["confirmed_orders"].empty:
             st.write(str(row["quantity"]))
         with col3:
             st.write(str(row["price"]*row["quantity"])+"$")
-
+        with col4:
+            st.write(str(row["order_date"]))
         prev_order_id=row["order_id"]
+

@@ -77,8 +77,8 @@ def add_to_cart(product_name: str, quantity:int):
     )
     return response
 
-def add_to_favorites(product_name:str):
-    url = f"{BASE_URL}/products/add_to_favorites"
+def handle_favorites(product_name:str):
+    url = f"{BASE_URL}/favorites/handle_favorites"
     token = st.session_state.get("access_token")
     response = httpx.put(
         url,
@@ -117,6 +117,13 @@ def remove_from_order(product_name:str, amount:int):
     )
     return response
 
+def delete_order(order_id):
+    url = f"{BASE_URL}/order/{order_id}"
+    response = httpx.delete(
+        url
+    )
+    return response
+
 def confirm_order():
     url = f"{BASE_URL}/order/confirm_order"
     token = st.session_state.get("access_token")
@@ -126,3 +133,11 @@ def confirm_order():
     )
     return response
 
+def get_user_favorites():
+    url = f"{BASE_URL}/favorites/get_user_favorites"
+    token = st.session_state.get("access_token")
+    response = httpx.get(
+        url,
+        headers = {"Authorization" : f"Bearer: {token}"}
+    )
+    return response

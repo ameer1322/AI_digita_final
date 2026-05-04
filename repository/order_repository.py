@@ -74,7 +74,7 @@ async def delete_order(order_id:int):
 
 async def get_user_unconfirmed_order(user_id):
     query = """
-    SELECT name, quantity, price, order_product.product_id FROM orders
+    SELECT name, quantity, price, order_product.product_id, orders.order_id FROM orders
     JOIN order_product ON orders.order_id = order_product.order_id
     JOIN products ON order_product.product_id = products.product_id
     WHERE user_id = :user_id AND order_status = FALSE
@@ -85,7 +85,7 @@ async def get_user_unconfirmed_order(user_id):
 
 async def get_user_confirmed_orders(user_id):
     query = """
-    SELECT name, quantity, price, orders.order_id FROM orders
+    SELECT name, quantity, price, orders.order_id, order_date FROM orders
     JOIN order_product ON orders.order_id = order_product.order_id
     JOIN products ON order_product.product_id = products.product_id
     WHERE user_id = :user_id AND order_status = TRUE

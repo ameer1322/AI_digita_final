@@ -47,7 +47,6 @@ async def get_products_by_name(products:str):
         """
     values = {f"word{i}":f"%{word}%" for i,word in enumerate(words)}
     result = await database.fetch_all(query, values)
-    print(result)
     return result
 
 async def get_product_quantity_by_name(name:str):
