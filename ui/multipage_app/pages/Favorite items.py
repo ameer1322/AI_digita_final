@@ -1,6 +1,7 @@
+import pandas as pd
 import streamlit as st
 
-from api import get_user_favorites
+from api import get_user_favorites, handle_favorites
 
 
 
@@ -16,8 +17,26 @@ if st.session_state.get("refresh_favorites"):
     st.session_state["refresh_favorites"] = False
     fetch_favorites.clear()
 
-favorites = fetch_favorites()
+st.session_state["favorites"] = pd.DataFrame(fetch_favorites())
 
+if not st.session_state["favorites"].empty:
+    col1,col2,col3 = st.columns([1,1,1])
+    with col1:
+        st.write("Product name")
+    with col2:
+        st.write("Price")
 
+    for _, row in st.session_state["favorites"].iterrows():
+        col1,col2,col3 = st.columns([1,1,1])
+        with col1:
+            st.write(row["name"])
+        with col2:
+            st.write(f'{row["price"]}$')
+        with col3:
+            if st.button("Remove from favorites", key=f"remove {row['product_id']}"):
+                handle_favorites(row["name"])
+                fetch_favorites.clear()
+                st.rerun()
+else:
+    st.subheader("No items in favorites")
 
-st.write(favorites)
