@@ -32,9 +32,10 @@ st.session_state["unconfirmed_order"] = pd.DataFrame(fetch_unconfirmed_order())
 st.session_state["confirmed_orders"] = pd.DataFrame(fetch_confirmed_orders())
 
 
-st.session_state["confirmed_orders"]["order_date"] = pd.to_datetime(
-    st.session_state["confirmed_orders"]["order_date"]
-).dt.strftime("%B %d, %Y %H:%M")
+if not st.session_state["confirmed_orders"].empty:
+    st.session_state["confirmed_orders"]["order_date"] = pd.to_datetime(
+        st.session_state["confirmed_orders"]["order_date"]
+    ).dt.strftime("%B %d, %Y %H:%M")
 
 if not st.session_state["unconfirmed_order"].empty:
     order_id = st.session_state["unconfirmed_order"]["order_id"][0]
@@ -98,7 +99,7 @@ st.subheader("Past orders")
 
 if not st.session_state["confirmed_orders"].empty:
 
-    col1,col2,col3,col4 = st.columns([1,1,1,1])
+    col1,col2,col3,col4,col5, col6 = st.columns([1,1,1,1,1,1])
     with col1:
         st.write("Product")
     with col2:
@@ -107,12 +108,16 @@ if not st.session_state["confirmed_orders"].empty:
         st.write("Total price")
     with col4:
         st.write("Order date")
+    with col5:
+        st.write("Order address")
+    with col6:
+        st.write("Order ID")
     prev_order_id = None
     for _, row in st.session_state["confirmed_orders"].iterrows():
         if prev_order_id is not None and row["order_id"] != prev_order_id:
             st.divider()
 
-        col1, col2, col3, col4 = st.columns([1,1,1,1])
+        col1, col2, col3, col4, col5,col6 = st.columns([1,1,1,1,1,1])
 
         with col1:
             st.write(row["name"])
@@ -122,5 +127,14 @@ if not st.session_state["confirmed_orders"].empty:
             st.write(str(row["price"]*row["quantity"])+"$")
         with col4:
             st.write(str(row["order_date"]))
+        with col5:
+            st.write(str(row["order_shipping_address"]))
+        with col6:
+            if row["order_id"] != prev_order_id:
+                st.write(str(row["order_id"]))
+
         prev_order_id=row["order_id"]
+
+else:
+    st.subheader("No past orders!")
 

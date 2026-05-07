@@ -50,3 +50,5 @@ async def delete_user(user_id:int):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
     return await users_repository.delete_user(user_id)
+async def get_user_address(user_id:int):
+    return await users_repository.get_user_address(user_id)

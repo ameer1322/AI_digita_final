@@ -71,3 +71,13 @@ async def delete_user(user_id:int):
     """
     values = {"user_id":user_id}
     await database.execute(query,values)
+
+
+async def get_user_address(user_id:int):
+    query = """
+    SELECT address FROM users 
+    WHERE user_id = :user_id
+    """
+    values = {"user_id":user_id}
+    result = await database.fetch_one(query,values)
+    return result

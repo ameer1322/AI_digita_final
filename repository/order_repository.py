@@ -31,12 +31,12 @@ async def check_order_exists(order_id:int):
     result = await database.fetch_one(query,values)
     return result
 
-async def create_new_order(user_id:int):
+async def create_new_order(user_id:int, shipping_address:str):
     query = """
-    INSERT INTO orders (user_id)
-    VALUES(:user_id)
+    INSERT INTO orders (user_id, order_shipping_address)
+    VALUES(:user_id, :order_shipping_address)
     """
-    values = {"user_id":user_id}
+    values = {"user_id":user_id, "order_shipping_address":shipping_address}
     return await database.execute(query,values)
 
 async def create_new_order_product(order:OrderRequest, order_id, product_id:int):
@@ -74,7 +74,7 @@ async def delete_order(order_id:int):
 
 async def get_user_unconfirmed_order(user_id):
     query = """
-    SELECT name, quantity, price, order_product.product_id, orders.order_id FROM orders
+    SELECT name, quantity, price, order_product.product_id, orders.order_id, orders.order_shipping_address FROM orders
     JOIN order_product ON orders.order_id = order_product.order_id
     JOIN products ON order_product.product_id = products.product_id
     WHERE user_id = :user_id AND order_status = FALSE
@@ -85,7 +85,7 @@ async def get_user_unconfirmed_order(user_id):
 
 async def get_user_confirmed_orders(user_id):
     query = """
-    SELECT name, quantity, price, orders.order_id, order_date FROM orders
+    SELECT name, quantity, price, orders.order_id, order_date, orders.order_shipping_address FROM orders
     JOIN order_product ON orders.order_id = order_product.order_id
     JOIN products ON order_product.product_id = products.product_id
     WHERE user_id = :user_id AND order_status = TRUE

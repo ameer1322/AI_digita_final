@@ -6,6 +6,8 @@ sys.path.append(os.path.dirname(__file__))
 
 import pandas as pd
 
+st.set_page_config(layout="wide")
+
 if "products_df" not in st.session_state:
     st.session_state["products_df"] = None
 

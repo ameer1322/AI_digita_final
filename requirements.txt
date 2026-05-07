@@ -14,3 +14,4 @@ jose
 passlib
 pandas
 PyJWT
+openai

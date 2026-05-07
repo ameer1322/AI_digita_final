@@ -1,5 +1,8 @@
 from fastapi import APIRouter
 from pydantic import BaseSettings
+import os
+import openai
+from openai import OpenAI
 
 
 class Config(BaseSettings):
@@ -21,4 +24,6 @@ class Config(BaseSettings):
     COOKIE_SAMESITE: str = "lax"
     COOKIE_MAX_AGE: int = 1800
 
+
+os.environ["OPENAI_API_KEY"] = "my_secret_key_here"
 config = Config()

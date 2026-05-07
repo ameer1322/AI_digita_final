@@ -8,7 +8,7 @@ from model.order_request import OrderRequest
 
 from model.order_request import OrderRequest
 from repository import order_repository
-from service import products_service
+from service import products_service, users_service
 
 
 async def get_orders():
@@ -26,8 +26,8 @@ async def check_order_exists(order_id:int):
 async def add_product_to_order(order : OrderRequest, order_id : int, product_id):
     return await order_repository.add_product_to_order(order, order_id, product_id)
 
-async def create_new_order(order:OrderRequest,user_id:int):
-    return await order_repository.create_new_order(user_id)
+async def create_new_order(user_id:int, shipping_address: str):
+    return await order_repository.create_new_order(user_id, shipping_address)
 
 async def create_order_product(order: OrderRequest, order_id: int, product_id:int):
     return await order_repository.create_new_order_product(order, order_id, product_id)
@@ -45,7 +45,9 @@ async def handle_order(order : OrderRequest, user_id):
                 raise ValueError("Order is bigger than inventory!")
             return await add_product_to_order(order, order_id, product_id)
         return await order_repository.create_new_order_product(order, order_id, product_id)
-    order_id = await create_new_order(order,user_id)
+    shipping_address = await users_service.get_user_address(user_id)
+    print(shipping_address[0])
+    order_id = await create_new_order(user_id, shipping_address)
     return await order_repository.create_new_order_product(order, order_id, product_id)
 
 
