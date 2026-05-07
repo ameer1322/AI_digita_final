@@ -92,7 +92,7 @@ if not st.session_state["unconfirmed_order"].empty:
         fetch_confirmed_orders.clear()
         st.rerun()
 else:
-    st.subheader("No order yet!")
+    st.subheader("No open order yet!")
 
 st.divider()
 st.subheader("Past orders")
