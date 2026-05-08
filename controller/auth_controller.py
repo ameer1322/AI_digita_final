@@ -37,7 +37,6 @@ async def create_user(user: RegisterModel, response: Response):
         return {"message": "User created successfully"}
 
     except Exception as e:
-        print(str(e))
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail=str(e))
 
 
@@ -56,7 +55,6 @@ async def login_for_access_token(credentials : LoginModel, response: Response):
         samesite=config.COOKIE_SAMESITE,
         max_age=config.COOKIE_MAX_AGE
     )
-    print(jwt.decode(access_token.jwt_token, options={"verify_signature":False}))
     return {"message": "Logged in successfully"}
 
 @router.post("/logout", status_code=status.HTTP_200_OK)

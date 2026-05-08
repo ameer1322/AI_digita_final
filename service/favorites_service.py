@@ -11,7 +11,6 @@ from service import products_service
 async def handle_favorites(user_id:int,product_name:str):
     product_id = await products_service.get_product_id_by_name(product_name)
     product_in_favorites = await get_user_favorites_by_product_id(product_id,user_id)
-    print(product_in_favorites)
     if product_in_favorites:
         return await favorites_repository.remove_from_favorites(user_id,product_id)
     else:

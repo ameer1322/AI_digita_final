@@ -31,9 +31,6 @@ def create_access_token(username: str, user_id: int) -> AuthResponse:
     user_data = {"subject": username, "id": user_id}
     token_expire = datetime.now(timezone.utc)+ timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
     user_data.update({"exp": token_expire})
-    print(datetime.utcnow())
-    print(f"Now: {datetime.utcnow()}")
-    print(f"Token expire: {token_expire}")
     token = jwt.encode(user_data, config.SECRET_KEY, config.ALGORITHM)
     return AuthResponse(jwt_token=token)
 

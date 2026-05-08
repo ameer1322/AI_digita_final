@@ -40,7 +40,10 @@ async def handle_order(order : OrderRequest, authorization: str= Header()):
         user_id = payload["id"]
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Token expired or invalid")
-    return await order_service.handle_order(order, user_id)
+    try:
+        return await order_service.handle_order(order, user_id)
+    except ValueError as e:
+        raise HTTPException(status_code=400,detail=str(e))
 
 @router.delete("/{order_id}",status_code=status.HTTP_204_NO_CONTENT)
 async def delete_order(order_id : int):

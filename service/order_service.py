@@ -46,8 +46,7 @@ async def handle_order(order : OrderRequest, user_id):
             return await add_product_to_order(order, order_id, product_id)
         return await order_repository.create_new_order_product(order, order_id, product_id)
     shipping_address = await users_service.get_user_address(user_id)
-    print(shipping_address[0])
-    order_id = await create_new_order(user_id, shipping_address)
+    order_id = await create_new_order(user_id, shipping_address[0])
     return await order_repository.create_new_order_product(order, order_id, product_id)
 
 

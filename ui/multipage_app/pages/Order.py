@@ -74,7 +74,7 @@ if not st.session_state["unconfirmed_order"].empty:
                     st.rerun()
                 else:
                     st.error("Choose a smaller amount to remove")
-
+    st.markdown(f"Shipping address: &nbsp;&nbsp;&nbsp;&nbsp; {st.session_state['unconfirmed_order']['order_shipping_address'][0]}")
     if st.button("Place order"):
         response = confirm_order()
         if response.status_code == 400:
@@ -83,8 +83,8 @@ if not st.session_state["unconfirmed_order"].empty:
             st.success("Order confirmed!")
             fetch_unconfirmed_order.clear()
             fetch_confirmed_orders.clear()
+            st.session_state["refresh_items"]=True
             st.rerun()
-
     if st.button("Delete order"):
         response = delete_order(order_id)
         st.success("Order deleted!")
@@ -125,13 +125,13 @@ if not st.session_state["confirmed_orders"].empty:
             st.write(str(row["quantity"]))
         with col3:
             st.write(str(row["price"]*row["quantity"])+"$")
-        with col4:
-            st.write(str(row["order_date"]))
-        with col5:
-            st.write(str(row["order_shipping_address"]))
-        with col6:
-            if row["order_id"] != prev_order_id:
-                st.write(str(row["order_id"]))
+        if row["order_id"] != prev_order_id:
+            with col4:
+                st.write(str(row["order_date"]))
+            with col5:
+                    st.write(str(row["order_shipping_address"]))
+            with col6:
+                    st.write(str(row["order_id"]))
 
         prev_order_id=row["order_id"]
 

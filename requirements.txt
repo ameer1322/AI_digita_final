@@ -15,3 +15,4 @@ passlib
 pandas
 PyJWT
 openai
+redis

@@ -44,7 +44,7 @@ CREATE TABLE orders(
     user_id INT NOT NULL,
     order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     order_shipping_address VARCHAR(255) NOT NULL,
-    order_status BOOL DEFAULT FALSE,
+    order_status enum ("TEMP","CLOSED") DEFAULT "TEMP",
     FOREIGN KEY (user_id) REFERENCES users(user_id) on DELETE CASCADE
 );
 
@@ -67,4 +67,17 @@ VALUES
 ("Kitchen knife", 20, 150),
 ("T-shirt", 15, 160),
 ("Hat", 10, 86),
-("Sun screen", 5, 200)
+("Sun screen", 5, 200),
+("Running shoes", 80, 45),
+("Backpack", 55, 60),
+("Water bottle", 12, 300),
+("Laptop", 999, 15),
+("Mouse", 25, 120),
+("Keyboard", 45, 90),
+("Monitor", 350, 20),
+("Headphones", 75, 55),
+("Desk lamp", 30, 80),
+("Notebook", 8, 500),
+("Pen set", 5, 400),
+("Coffee mug", 10, 250),
+("Phone case", 15, 180)
