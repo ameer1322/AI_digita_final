@@ -22,5 +22,5 @@ class Config(BaseSettings):
     COOKIE_MAX_AGE: int = 1800
 
 
-os.environ["OPENAI_API_KEY"] = "my_secret_key_here"
+os.environ["OPENAI_API_KEY"] = "secret_key"
 config = Config()
