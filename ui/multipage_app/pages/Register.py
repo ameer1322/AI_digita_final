@@ -40,6 +40,8 @@ with st.form("register"):
             errors.append("Invalid first name")
         if not re.match(NAME_REGEX, last_name):
             errors.append("Invalid last name")
+        if age<18:
+            errors.append("Age must be over 18")
         if not re.match(EMAIL_REGEX, email):
             errors.append("Invalid email")
         if not re.match(USERNAME_REGEX, username):
