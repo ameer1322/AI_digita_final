@@ -16,4 +16,7 @@ router = APIRouter(
 
 @router.get("/",status_code=status.HTTP_200_OK)
 async def get_order_products():
-    return await order_product_service.get_order_products()
+    try:
+        return await order_product_service.get_order_products()
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

@@ -57,7 +57,11 @@ async def get_user_unconfirmed_order(authorization: str = Header()):
         user_id = payload["id"]
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Token expired or invalid")
-    return await order_service.get_user_unconfirmed_order(user_id)
+    try:
+        return await order_service.get_user_unconfirmed_order(user_id)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
 
 @router.get("/get_user_confirmed_orders",status_code=status.HTTP_200_OK)
 async def get_user_confirmed_orders(authorization:str = Header()):
@@ -67,7 +71,11 @@ async def get_user_confirmed_orders(authorization:str = Header()):
         user_id = payload["id"]
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Token expired or invalid")
-    return await order_service.get_user_confirmed_orders(user_id)
+    try:
+        return await order_service.get_user_confirmed_orders(user_id)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
 
 @router.put("/remove_from_order",status_code=status.HTTP_200_OK)
 async def remove_from_order(remove_request : RemoveFromOrderRequest,authorization : str = Header()):
@@ -77,7 +85,11 @@ async def remove_from_order(remove_request : RemoveFromOrderRequest,authorizatio
         user_id = payload["id"]
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Token expired or invalid")
-    return await order_service.remove_from_order(remove_request.product_name,remove_request.amount,user_id)
+    try:
+        return await order_service.remove_from_order(remove_request.product_name,remove_request.amount,user_id)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
 
 @router.put("/confirm_order",status_code=status.HTTP_200_OK)
 async def confirm_order(authorization:str = Header()):

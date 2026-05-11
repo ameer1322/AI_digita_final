@@ -43,23 +43,29 @@ async def create_user(user: RegisterModel, response: Response):
 
 @router.post("/login", status_code=status.HTTP_200_OK)
 async def login_for_access_token(credentials : LoginModel, response: Response):
-    user = await auth_service.authenticate_user(credentials)
-    if not user:
-        raise user_credentials_exception()
-    access_token = auth_service.create_access_token(user.username, user.user_id)
-    response.set_cookie(
-        key=config.COOKIE_NAME,
-        value=access_token.jwt_token,
-        httponly=config.COOKIE_HTTPONLY,
-        secure=config.COOKIE_SECURE,
-        samesite=config.COOKIE_SAMESITE,
-        max_age=config.COOKIE_MAX_AGE
-    )
-    return {"message": "Logged in successfully"}
+    try:
+        user = await auth_service.authenticate_user(credentials)
+        if not user:
+            raise user_credentials_exception()
+        access_token = auth_service.create_access_token(user.username, user.user_id)
+        response.set_cookie(
+            key=config.COOKIE_NAME,
+            value=access_token.jwt_token,
+            httponly=config.COOKIE_HTTPONLY,
+            secure=config.COOKIE_SECURE,
+            samesite=config.COOKIE_SAMESITE,
+            max_age=config.COOKIE_MAX_AGE
+        )
+        return {"message": "Logged in successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 @router.post("/logout", status_code=status.HTTP_200_OK)
 async def logout(response : Response):
-    response.delete_cookie(key = config.COOKIE_NAME)
-    return {"message":"Logged out successfully!"}
+    try:
+        response.delete_cookie(key = config.COOKIE_NAME)
+        return {"message":"Logged out successfully!"}
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 

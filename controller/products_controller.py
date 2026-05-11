@@ -23,7 +23,10 @@ async def get_products():
 
 @router.put("/reduce_inventory",status_code=status.HTTP_200_OK)
 async def reduce_inventory(reduce_request:ProductReduceInventoryModel):
-    return await products_service.reduce_inventory(reduce_request.product_id,reduce_request.amount)
+    try:
+        return await products_service.reduce_inventory(reduce_request.product_id,reduce_request.amount)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 @router.post("/",status_code=status.HTTP_201_CREATED)
 async def create_product(product: ProductModel):

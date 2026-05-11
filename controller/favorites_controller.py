@@ -23,7 +23,10 @@ async def handle_favorites(request: FavoriteRequest, authorization:str = Header(
         user_id = payload["id"]
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Token expired or invalid")
-    return await favorites_service.handle_favorites(user_id,request.product_name)
+    try:
+        return await favorites_service.handle_favorites(user_id,request.product_name)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 
 @router.get("/get_user_favorites",status_code=status.HTTP_200_OK)
@@ -34,4 +37,7 @@ async def get_user_favorites(authorization: str = Header()):
         user_id = payload["id"]
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Token expired or invalid")
-    return await favorites_service.get_user_favorites(user_id)
+    try:
+        return await favorites_service.get_user_favorites(user_id)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
