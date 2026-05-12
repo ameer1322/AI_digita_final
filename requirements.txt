@@ -20,3 +20,5 @@ mysql-connector-python
 PyJWT
 openai
 redis
+matplotlib
+pymysql
