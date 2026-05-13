@@ -2,67 +2,71 @@ import streamlit as st
 import joblib
 import numpy as np
 import mysql.connector
-import sys
+from config.config import config
 import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from repository.database import database
+import pymysql
 
-# ─────────────────────────────────────────────
-# DB connection (reuse your existing config)
-# ─────────────────────────────────────────────
-# DB_CONFIG = {
-#     "host":     config.MYSQL_HOST,
-#     "user":     config.MYSQL_USER,       # your MySQL username
-#     "password": config.MYSQL_PASSWORD,           # your MySQL password
-#     "database": config.MYSQL_DATABASE            # your database name
-# }
+conn = pymysql.connect(
+    host=config.MYSQL_HOST,
+    user=config.MYSQL_USER,
+    password=config.MYSQL_PASSWORD,
+    database=config.MYSQL_DATABASE,
+    port=int(config.MYSQL_PORT)
+)
 
-# ─────────────────────────────────────────────
-# Load model (cached so it only loads once)
-# ─────────────────────────────────────────────
+
 @st.cache_resource
 def load_model():
     model_path = os.path.join(os.path.dirname(__file__), "spend_model.pkl")
     if not os.path.exists(model_path):
-        st.error("❌ Model not found. Please run train_model.py first.")
+        st.error("Model not found, Please run train_model.py first.")
         return None
     return joblib.load(model_path)
 
+@st.cache_resource
+def load_converter():
+    converter_path = os.path.join(os.path.dirname(__file__), "spend_model_converter.pkl")
+    if not os.path.exists(converter_path):
+        st.error("Converter not found, Please run train_model.py first.")
+        return None
+    return joblib.load(converter_path)
 
-# ─────────────────────────────────────────────
-# Fetch a real user's features from the DB
-# ─────────────────────────────────────────────
+
+
 def get_user_features(user_id: int) -> dict | None:
-    row = database.fetch_one("""
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    query = """
         SELECT
-            u.age,
-            COUNT(DISTINCT o.order_id)              AS total_orders,
-            SUM(op.quantity * p.price)              AS total_spent,
-            AVG(order_totals.order_total)           AS avg_order_spend,
-            SUM(op.quantity)                        AS total_items_bought
-        FROM users u
-        JOIN orders o
-            ON u.user_id = o.user_id AND o.order_status = 'CLOSED'
-        JOIN order_product op ON o.order_id = op.order_id
-        JOIN products p ON op.product_id = p.product_id
+            users_1.age,
+            COUNT(DISTINCT orders_1.order_id) AS total_orders,
+            SUM(order_product_1.quantity * products_1.price) AS total_spent,
+            AVG(order_totals.order_total) AS avg_order_spend,
+            SUM(order_product_1.quantity) AS total_items_bought
+        FROM users users_1
+        JOIN orders orders_1
+            ON users_1.user_id = orders_1.user_id AND orders_1.order_status = 'CLOSED'
+        JOIN order_product order_product_1 ON orders_1.order_id = order_product_1.order_id
+        JOIN products products_1 ON order_product_1.product_id = products_1.product_id
         JOIN (
-            SELECT op2.order_id, SUM(op2.quantity * p2.price) AS order_total
-            FROM order_product op2
-            JOIN products p2 ON op2.product_id = p2.product_id
-            GROUP BY op2.order_id
-        ) AS order_totals ON o.order_id = order_totals.order_id
-        LEFT JOIN favorites f ON u.user_id = f.user_id
-        WHERE u.user_id = %s
-        GROUP BY u.user_id, u.age, u.join_date
-    """, (user_id,))
+            SELECT order_product_2.order_id, SUM(order_product_2.quantity * products_2.price) AS order_total
+            FROM order_product order_product_2
+            JOIN products products_2 ON order_product_2.product_id = products_2.product_id
+            GROUP BY order_product_2.order_id
+        ) AS order_totals ON orders_1.order_id = order_totals.order_id
+        WHERE users_1.user_id = %s
+        GROUP BY users_1.user_id
+    """
+    cursor.execute(query, (user_id,))
+    row = cursor.fetchone()
+    cursor.close()
+    conn.close()
     return row
 
 
-# ─────────────────────────────────────────────
-# Core prediction function
-# ─────────────────────────────────────────────
+
 def predict_spend(features: dict) -> float:
     model = load_model()
+    converter = load_converter()
     if model is None:
         return 0.0
     X = np.array([[
@@ -71,19 +75,18 @@ def predict_spend(features: dict) -> float:
         features["avg_order_spend"],
         features["total_items_bought"]
     ]])
-    return round(float(model.predict(X)[0]), 2)
+    X_converted = converter.transform(X)
+    return round(float(model.predict(X_converted)[0]), 2)
 
 
-# ─────────────────────────────────────────────
-# Streamlit page
-# ─────────────────────────────────────────────
+
 def show_predictor_page():
-    st.title("🛒 User Spend Predictor")
-    st.markdown("Predict how much a user is likely to spend on their **next order**, based on their real purchase history.")
+    st.title("User Spend Predictor")
+    st.write("Predict how much a user is likely to spend on their next order, based on their real purchase history.")
 
     user_id = st.number_input("Enter User ID", min_value=1, step=1, value=1)
 
-    if st.button("🔮 Predict Spend", use_container_width=True):
+    if st.button("Predict Spend", use_container_width=True):
         with st.spinner("Fetching user data from database..."):
             features = get_user_features(user_id)
 
@@ -94,23 +97,13 @@ def show_predictor_page():
         prediction = predict_spend(features)
 
         # Show user stats
-        st.subheader("📋 User Stats")
-        col1, col2, col3, col4 = st.columns(4)
+        st.subheader("User Stats")
+        col1, col2, col3= st.columns(3)
         col1.metric("Total Orders",       int(features["total_orders"]))
-        col2.metric("Total Spent",        f"${features['total_spent']:.2f}")
-        col3.metric("Avg Order Spend",    f"${features['avg_order_spend']:.2f}")
-        col4.metric("Days Since Last Order", int(features["days_since_last_order"]))
+        col2.metric("Total Spent",        f"${features['total_spent']}")
+        col3.metric("Avg Order Spend",    f"${round(features['avg_order_spend'],2)}")
 
-        # Prediction result
-        st.success(f"💰 Predicted Next Order Spend: **${prediction}**")
-
-        # Business insight
-        if prediction > 100:
-            st.info("🔥 High-value user — show premium or bundled product recommendations.")
-        elif prediction > 40:
-            st.info("📦 Medium spender — upsell complementary products or offer free shipping threshold.")
-        else:
-            st.info("💡 Low spender — try a discount or coupon to increase order value.")
+        st.success(f"Predicted Next Order Spend: ${prediction}")
 
 
 # Run standalone

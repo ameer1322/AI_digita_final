@@ -134,4 +134,5 @@ fully_converted_x = final_poly_converter.fit_transform(X)
 final_model.fit(fully_converted_x,y)
 
 dump(final_model, "spend_model.pkl")
+dump(final_poly_converter, "spend_model_converter.pkl")
 print("Model saved to spend_model.pkl")
