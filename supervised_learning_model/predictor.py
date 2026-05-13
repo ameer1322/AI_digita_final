@@ -2,17 +2,20 @@ import streamlit as st
 import joblib
 import numpy as np
 import mysql.connector
+import sys
 import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from repository.database import database
 
 # ─────────────────────────────────────────────
 # DB connection (reuse your existing config)
 # ─────────────────────────────────────────────
-DB_CONFIG = {
-    "host":     "localhost",
-    "user":     "root",       # your MySQL username
-    "password": "",           # your MySQL password
-    "database": ""            # your database name
-}
+# DB_CONFIG = {
+#     "host":     config.MYSQL_HOST,
+#     "user":     config.MYSQL_USER,       # your MySQL username
+#     "password": config.MYSQL_PASSWORD,           # your MySQL password
+#     "database": config.MYSQL_DATABASE            # your database name
+# }
 
 # ─────────────────────────────────────────────
 # Load model (cached so it only loads once)
@@ -30,18 +33,13 @@ def load_model():
 # Fetch a real user's features from the DB
 # ─────────────────────────────────────────────
 def get_user_features(user_id: int) -> dict | None:
-    conn = mysql.connector.connect(**DB_CONFIG)
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("""
+    row = database.fetch_one("""
         SELECT
             u.age,
-            DATEDIFF(NOW(), u.join_date)            AS days_since_joined,
             COUNT(DISTINCT o.order_id)              AS total_orders,
-            DATEDIFF(NOW(), MAX(o.order_date))      AS days_since_last_order,
             SUM(op.quantity * p.price)              AS total_spent,
             AVG(order_totals.order_total)           AS avg_order_spend,
-            SUM(op.quantity)                        AS total_items_bought,
-            COUNT(DISTINCT f.product_id)            AS num_favorites
+            SUM(op.quantity)                        AS total_items_bought
         FROM users u
         JOIN orders o
             ON u.user_id = o.user_id AND o.order_status = 'CLOSED'
@@ -57,9 +55,6 @@ def get_user_features(user_id: int) -> dict | None:
         WHERE u.user_id = %s
         GROUP BY u.user_id, u.age, u.join_date
     """, (user_id,))
-    row = cursor.fetchone()
-    cursor.close()
-    conn.close()
     return row
 
 
@@ -71,14 +66,10 @@ def predict_spend(features: dict) -> float:
     if model is None:
         return 0.0
     X = np.array([[
-        features["age"],
-        features["days_since_joined"],
         features["total_orders"],
-        features["days_since_last_order"],
         features["total_spent"],
         features["avg_order_spend"],
-        features["total_items_bought"],
-        features["num_favorites"] or 0,
+        features["total_items_bought"]
     ]])
     return round(float(model.predict(X)[0]), 2)
 
