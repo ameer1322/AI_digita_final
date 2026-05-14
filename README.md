@@ -77,13 +77,11 @@ streamlit run .\ui\multipage_app\landing.py
 docker compose up
 ```
 
-### 1.Go to the train_model.py file in supervised_learning_model.
+### 1.In folder "supervised_learning_model" run "train_model_degree.py" to find optimal degree
 
-### 2.Run the first half of the code in order to find optimal degree for polynomial regression.
+### The code will take the users data from the database and create a graph to find the optimal degree.
 
-### The code will take the users data from the database and create a graph to find the optimal degree. 
-
-### 3.After finding optimal degree for the dataset, run the second half of the code.
+### 2.Insert optimal degree in "train_model.py" and run the fild
 
 ### The code will take the users data from the database and train on them, then it will create a supervised learning model and converter as well as a user_dataset for the data it trained on. 
 
@@ -93,4 +91,4 @@ docker compose up
 streamlit run .\supervised_learning_model\predictor.py
 ```
 
-### 5.Enter user id for user you want to make a prediction on
+### 5.Enter user id for user you want to make a prediction on.
