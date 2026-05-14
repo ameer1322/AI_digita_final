@@ -2,9 +2,11 @@ import streamlit as st
 import joblib
 import numpy as np
 import mysql.connector
-from config.config import config
+import sys
 import os
 import pymysql
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config.config import config
 
 conn = pymysql.connect(
     host=config.MYSQL_HOST,
