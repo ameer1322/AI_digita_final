@@ -12,3 +12,13 @@ bcrypt==4.0.1
 streamlit
 jose
 passlib
+pandas
+scikit-learn
+numpy
+joblib
+mysql-connector-python
+PyJWT
+openai
+redis
+matplotlib
+pymysql

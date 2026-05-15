@@ -2,6 +2,8 @@ from typing import Optional, List
 
 from fastapi import APIRouter, HTTPException
 from starlette import status
+
+from model.product_reduce_request import ProductReduceInventoryModel
 from model.product_update_quantity import ProductUpdateQuantity
 from model.product_model import ProductModel
 
@@ -18,6 +20,13 @@ async def get_products():
         return await products_service.get_products()
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail=str(e))
+
+@router.put("/reduce_inventory",status_code=status.HTTP_200_OK)
+async def reduce_inventory(reduce_request:ProductReduceInventoryModel):
+    try:
+        return await products_service.reduce_inventory(reduce_request.product_id,reduce_request.amount)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 @router.post("/",status_code=status.HTTP_201_CREATED)
 async def create_product(product: ProductModel):
@@ -46,3 +55,19 @@ async def update_stock(name:str ,product_update_quantity :ProductUpdateQuantity)
         return await products_service.update_stock(name, product_update_quantity.quantity)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail=str(e))
+
+@router.get("/{products}",status_code=status.HTTP_200_OK)
+async def get_products_by_name(products:str):
+    try:
+        result = await products_service.get_products_by_name(products)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+@router.get("/get_inventory/{product_id}", status_code=status.HTTP_200_OK)
+async def get_inventory_by_id(product_id:int):
+    try:
+        result = await products_service.get_inventory_by_id(product_id)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

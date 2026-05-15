@@ -1,13 +1,16 @@
 from typing import Optional, List
 
 from passlib.context import CryptContext
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Header
 from sqlalchemy.util import deprecated
 from starlette import status
 
+from config.config import Config
 from model.login_model import LoginModel
 from model.register_model import RegisterModel
 from model.user_model import User
+import jwt
+
 
 from service import users_service
 from utils.security import pwd_context
@@ -17,6 +20,7 @@ router = APIRouter(
     tags=["users"]
 )
 
+config = Config()
 
 @router.get("/",status_code=status.HTTP_200_OK)
 async def get_users():
@@ -33,8 +37,14 @@ async def update_user(user_id:int, user:User):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
-@router.delete("/{user_id}",status_code=status.HTTP_204_NO_CONTENT)
-async def delete_user(user_id:int):
+@router.delete("/",status_code=status.HTTP_204_NO_CONTENT)
+async def delete_user(authorization : str = Header()):
+    token = authorization.replace("Bearer: ","")
+    try:
+        payload = jwt.decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
+        user_id = payload["id"]
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Token expired or invalid")
     try:
         return await users_service.delete_user(user_id)
     except Exception as e:

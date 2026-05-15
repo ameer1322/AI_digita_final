@@ -1,5 +1,8 @@
 from fastapi import APIRouter
 from pydantic import BaseSettings
+import os
+import openai
+from openai import OpenAI
 
 
 class Config(BaseSettings):
@@ -12,13 +15,12 @@ class Config(BaseSettings):
     MYSQL_HOST: str = "localhost"
     MYSQL_PORT: str = "3306"
     DATABASE_URL: str = f"mysql+aiomysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
-    REDIS_HOST: str =  "localhost"
-    REDIS_PORT: int = 6379
-    REDIS_TTL: int = 100
     COOKIE_NAME: str = "access_token"
     COOKIE_HTTPONLY: bool = True
     COOKIE_SECURE: bool = False
     COOKIE_SAMESITE: str = "lax"
     COOKIE_MAX_AGE: int = 1800
 
+
+os.environ["OPENAI_API_KEY"] = "secret_key"
 config = Config()

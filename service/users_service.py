@@ -13,7 +13,6 @@ from model.user_model import User
 from repository import users_repository
 
 async def get_users():
-
     return await users_repository.get_users()
 
 async def get_user_by_id(user_id:int):
@@ -22,7 +21,7 @@ async def get_user_by_id(user_id:int):
 async def get_user_by_username(username)-> UserResponse:
     return await users_repository.get_user_by_username(username)
 
-async def create_user(user:RegisterModel):
+async def create_user(user:RegisterModel) -> UserResponse:
     hashed_password = pwd_context.hash(user.password)
     hashed_user = User(
         first_name=user.first_name,
@@ -51,3 +50,5 @@ async def delete_user(user_id:int):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
     return await users_repository.delete_user(user_id)
+async def get_user_address(user_id:int):
+    return await users_repository.get_user_address(user_id)

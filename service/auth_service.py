@@ -1,4 +1,4 @@
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
@@ -14,7 +14,10 @@ oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 
 async def authenticate_user(credentials: LoginModel):
-    user = await users_service.get_user_by_username(credentials.username)
+    try:
+        user = await users_service.get_user_by_username(credentials.username)
+    except ValueError:
+        return False
     if not user or not await users_service.verify_password(credentials.password, user.hashed_password):
         return False
     return user
@@ -26,7 +29,7 @@ async def validate_user(token: str = Depends(oauth2_bearer)):
 
 def create_access_token(username: str, user_id: int) -> AuthResponse:
     user_data = {"subject": username, "id": user_id}
-    token_expire = datetime.utcnow() + timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
+    token_expire = datetime.now(timezone.utc)+ timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
     user_data.update({"exp": token_expire})
     token = jwt.encode(user_data, config.SECRET_KEY, config.ALGORITHM)
     return AuthResponse(jwt_token=token)
