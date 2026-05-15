@@ -20,7 +20,10 @@ config = Config()
 
 @router.get("/",status_code=status.HTTP_200_OK)
 async def get_orders():
-    return await order_service.get_orders()
+    try:
+        return await order_service.get_orders()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/get_order_by_user",status_code=status.HTTP_200_OK)
 async def get_order_id_by_user(authorization: str = Header()):
@@ -30,7 +33,10 @@ async def get_order_id_by_user(authorization: str = Header()):
         user_id = payload["id"]
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Token expired or invalid")
-    return await order_service.get_order_id_by_user(user_id)
+    try:
+        return await order_service.get_order_id_by_user(user_id)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @router.put("/",status_code=status.HTTP_201_CREATED)
 async def handle_order(order : OrderRequest, authorization: str= Header()):
@@ -47,7 +53,10 @@ async def handle_order(order : OrderRequest, authorization: str= Header()):
 
 @router.delete("/{order_id}",status_code=status.HTTP_204_NO_CONTENT)
 async def delete_order(order_id : int):
-    return await order_service.delete_order(order_id)
+    try:
+        return await order_service.delete_order(order_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/get_user_unconfirmed_order",status_code=status.HTTP_200_OK)
 async def get_user_unconfirmed_order(authorization: str = Header()):
